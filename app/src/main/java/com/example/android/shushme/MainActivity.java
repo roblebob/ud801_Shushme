@@ -38,6 +38,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
 
+
 public class MainActivity extends AppCompatActivity
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
 
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mAdapter);
 
         // TODO [✓] (4) Create a GoogleApiClient with the LocationServices API and GEO_DATA_API
-        Places.initialize( getApplicationContext(), getString(R.string.ApiKey));
+        Places.initialize(getApplicationContext(), getString(R.string.ApiKey));
         PlacesClient placesClient = Places.createClient(this);
 
     }

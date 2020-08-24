@@ -31,6 +31,7 @@ import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 
 
 public class MainActivity extends AppCompatActivity
@@ -62,14 +63,8 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mAdapter);
 
         // TODO [✓] (4) Create a GoogleApiClient with the LocationServices API and GEO_DATA_API
-        Places.initialize(getApplicationContext(), API_KEY)
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(
-                .addApi(GEO_DATA_API)
-                .build();
-
+        Places.initialize( getApplicationContext(), getString(R.string.ApiKey));
+        PlacesClient placesClient = Places.createClient(this);
 
     }
 

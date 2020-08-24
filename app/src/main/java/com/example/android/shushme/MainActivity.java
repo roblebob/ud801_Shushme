@@ -87,6 +87,8 @@ public class MainActivity extends AppCompatActivity
 
 
 
+
+
     // TODO (7) Override onResume and inside it initialize the location permissions ())
     @Override
     protected void onResume() {
@@ -97,6 +99,11 @@ public class MainActivity extends AppCompatActivity
 
 
     // TODO (8) Implement onLocationPermissionClicked to handle the CheckBox click event
+    public void onLocationPermissionClicked(View view){
+
+
+
+    }
 
 
 
@@ -104,4 +111,6 @@ public class MainActivity extends AppCompatActivity
     public void onAddPlaceButtonClicked(View view) {
 
     }
+
+
 }

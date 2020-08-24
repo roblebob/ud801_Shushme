@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity
     // TODO (9) Implement the Add Place Button click event to show  a toast message with the permission status
     public void onAddPlaceButtonClicked(View view) {
 
+
     }
 
 

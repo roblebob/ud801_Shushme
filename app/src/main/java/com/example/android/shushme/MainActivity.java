@@ -17,6 +17,7 @@ package com.example.android.shushme;
 */
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Places;
 
 import static com.google.android.gms.location.places.Places.GEO_DATA_API;
 
@@ -63,30 +65,25 @@ public class MainActivity extends AppCompatActivity
 
         // TODO [✓] (4) Create a GoogleApiClient with the LocationServices API and GEO_DATA_API
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
-                .addApi(GEO_DATA_API)
+                .addApi(Places.GEO_DATA_API)
+                .enableAutoManage(this, this)
                 .build();
-
 
     }
 
     // TODO (5) Override onConnected, onConnectionSuspended and onConnectionFailed for GoogleApiClient
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) { Log.i(TAG, "API Client connecting failed"); }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
+    public void onConnected(@Nullable Bundle bundle) { Log.i(TAG, "API Client connecting successfully"); }
 
     @Override
-    public void onConnectionSuspended(int i) {
-
-    }
+    public void onConnectionSuspended(int i) { Log.i(TAG, "API Client connecting was suspended"); }
 
 
 

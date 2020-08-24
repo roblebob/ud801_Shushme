@@ -17,6 +17,7 @@ package com.example.android.shushme;
 */
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -71,19 +72,13 @@ public class MainActivity extends AppCompatActivity
     // TODO (5) Override onConnected, onConnectionSuspended and onConnectionFailed for GoogleApiClient
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) { Log.i(TAG, "GoogleApiClient connecting failed"); }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
+    public void onConnected(@Nullable Bundle bundle) { Log.i(TAG, "GoogleApiClient connecting succeeded"); }
 
     @Override
-    public void onConnectionSuspended(int i) {
-
-    }
+    public void onConnectionSuspended(int i) { Log.i(TAG, "GoogleApiClient connecting has been suspended"); }
 
 
 
@@ -97,7 +92,9 @@ public class MainActivity extends AppCompatActivity
 
 
     // TODO (8) Implement onLocationPermissionClicked to handle the CheckBox click event
-
+    public void onLocationPermissionClicked(View view) {
+        
+    }
 
 
     // TODO (9) Implement the Add Place Button click event to show  a toast message with the permission status

@@ -16,9 +16,12 @@ package com.example.android.shushme;
 * limitations under the License.
 */
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity
 
     // Constants
     public static final String TAG = MainActivity.class.getSimpleName();
+    private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 111;
 
     // Member variables
     private PlaceListAdapter mAdapter;
@@ -82,23 +86,44 @@ public class MainActivity extends AppCompatActivity
 
 
 
+
     // TODO (7) Override onResume and inside it initialize the location permissions ())
     @Override
     protected void onResume() {
         super.onResume();
-        
 
+        // Initialize location permissions checkbox
+        CheckBox locationPermissions = (CheckBox) findViewById(R.id.location_permission_checkbox);
+        if (ActivityCompat.checkSelfPermission(MainActivity.this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            locationPermissions.setChecked(false);
+        } else {
+            locationPermissions.setChecked(true);
+            locationPermissions.setEnabled(false);
+        }
     }
+
 
 
     // TODO (8) Implement onLocationPermissionClicked to handle the CheckBox click event
-    public void onLocationPermissionClicked(View view) {
-        
+    public void onLocationPermissionClicked(View view){
+        ActivityCompat.requestPermissions(MainActivity.this,
+                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                PERMISSIONS_REQUEST_FINE_LOCATION);
     }
+
+
 
 
     // TODO (9) Implement the Add Place Button click event to show  a toast message with the permission status
     public void onAddPlaceButtonClicked(View view) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, getString(R.string.need_location_permission_message), Toast.LENGTH_LONG).show();
+            return;
+        }
+        Toast.makeText(this, getString(R.string.location_permission_granted_message), Toast.LENGTH_LONG).show();
 
     }
+
 }

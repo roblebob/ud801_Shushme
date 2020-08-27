@@ -147,7 +147,8 @@
             android:autoLink="web"
             android:paddingBottom="4dp"
             android:text="@string/privacy"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:gravity="center_horizontal" />
     </LinearLayout>
 
 

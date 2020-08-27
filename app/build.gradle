@@ -13,8 +13,12 @@ android {
     }
     buildTypes {
         release {
+            resValue 'string', "ApiKey", API_KEY_PLACES__SHUSH_ME
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            resValue 'string', "ApiKey", API_KEY_PLACES__SHUSH_ME
         }
     }
     compileOptions {

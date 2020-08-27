@@ -23,18 +23,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.location.places.PlaceBuffer;
+
 public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.PlaceViewHolder> {
 
     private Context mContext;
+    private PlaceBuffer mPlaces;
 
     /**
      * Constructor using the context and the db cursor
      *
      * @param context the calling context/activity
      */
-    public PlaceListAdapter(Context context) {
+    public PlaceListAdapter(Context context, PlaceBuffer placeBuffer) {
         // TODO (4) Take a PlaceBuffer as an input and store it as a local private member mPlaces
         this.mContext = context;
+        this.mPlaces = placeBuffer;
     }
 
     /**
@@ -48,8 +52,8 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.Plac
     public PlaceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Get the RecyclerView item layout
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.item_place_card, parent, false);
-        return new PlaceViewHolder(view);
+        View view = inflater.inflate( R.layout.item_place_card, parent, false);
+        return new PlaceViewHolder( view);
     }
 
     /**
@@ -60,11 +64,15 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.Plac
      */
     @Override
     public void onBindViewHolder(PlaceViewHolder holder, int position) {
-        // TODO (6) Implement onBindViewHolder to set the view holder's Name and Address text fields
-        // from the Place object at the specified position in mPlaces
+        // TODO (6) Implement onBindViewHolder to set the view holder's Name and Address text fields from the Place object at the specified position in mPlaces
+        holder.nameTextView.setText( mPlaces.get(position).getName().toString());
+        holder.addressTextView.setText( mPlaces.get(position).getAddress().toString());
     }
 
     //TODO (7) Implement a public method swapPlaces that replaces the current mPlaces PlaceBuffer with a new one
+    public void swapPlaces(PlaceBuffer placeBuffer) {
+        mPlaces = placeBuffer;
+    }
 
     /**
      * Returns the number of items in the cursor
@@ -74,7 +82,7 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.Plac
     @Override
     public int getItemCount() {
         // TODO (5) Update getItemCount to return mPlaces's item count
-        return 0;
+        return mPlaces.getCount();
     }
 
     /**
@@ -87,8 +95,8 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.Plac
 
         public PlaceViewHolder(View itemView) {
             super(itemView);
-            nameTextView = (TextView) itemView.findViewById(R.id.name_text_view);
-            addressTextView = (TextView) itemView.findViewById(R.id.address_text_view);
+            nameTextView = (TextView) itemView.findViewById( R.id.name_text_view);
+            addressTextView = (TextView) itemView.findViewById( R.id.address_text_view);
         }
 
     }

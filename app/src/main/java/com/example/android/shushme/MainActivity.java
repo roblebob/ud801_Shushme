@@ -186,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param data        The Intent that carries the result data.
      */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (requestCode == PLACE_PICKER_REQUEST && resultCode == RESULT_OK) {
             Place place = PlacePicker.getPlace(this, data);
             if (place == null) {
@@ -206,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements
             // Get live data information
             refreshPlacesData();
         }
+        else super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

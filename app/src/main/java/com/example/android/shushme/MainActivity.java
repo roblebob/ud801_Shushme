@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements
         mRecyclerView = (RecyclerView) findViewById( R.id.places_list_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // TODO (3) Modify the Adapter to take a PlaceBuffer in the constructor
+        // TODO [✓] (3) Modify the Adapter to take a PlaceBuffer in the constructor
         mAdapter = new PlaceListAdapter(this, null);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -113,8 +113,8 @@ public class MainActivity extends AppCompatActivity implements
         // - Calls Places.GeoDataApi.getPlaceById with that list of IDs     Note: When calling Places.GeoDataApi.getPlaceById use the same GoogleApiClient created in MainActivity's onCreate (you will have to declare it as a private member)
         PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById( mGoogleApiClient, guids.toArray( new String[guids.size()]));
 
-        //TODO (8) Set the getPlaceById callBack so that onResult calls the Adapter's swapPlaces with the result
-        placeResult .setResultCallback( places -> mAdapter.swapPlaces(places));
+        //TODO [✓] (8) Set the getPlaceById callBack so that onResult calls the Adapter's swapPlaces with the result
+        placeResult .setResultCallback( placeBuffer -> mAdapter.swapPlaces( placeBuffer));
     }
 
 

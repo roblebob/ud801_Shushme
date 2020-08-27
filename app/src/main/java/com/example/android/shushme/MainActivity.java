@@ -82,8 +82,7 @@ public class MainActivity extends AppCompatActivity implements
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // TODO (3) Modify the Adapter to take a PlaceBuffer in the constructor
-        mAdapter = new PlaceListAdapter(this, new PlaceBuffer(
-                new DataHolder( getContentResolver() .query( PlaceContract.PlaceEntry.CONTENT_URI, null, null, null, null),0, new Bundle())));
+        mAdapter = new PlaceListAdapter(this, null);
         mRecyclerView.setAdapter(mAdapter);
 
 

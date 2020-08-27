@@ -208,8 +208,10 @@ public class MainActivity extends AppCompatActivity implements
 
             // Insert a new place into DB
             ContentValues contentValues = new ContentValues();
-            contentValues.put( PlaceContract.PlaceEntry.COLUMN_PLACE_ID, placeID);
-            getContentResolver().insert( PlaceContract.PlaceEntry.CONTENT_URI, contentValues);
+            contentValues .put( PlaceContract.PlaceEntry.COLUMN_PLACE_ID, placeID);
+            getContentResolver() .insert( PlaceContract.PlaceEntry.CONTENT_URI, contentValues);
+
+            refreshPlacesData();
         }
         else super.onActivityResult(requestCode, resultCode, data);
     }

@@ -13,12 +13,11 @@ android {
     }
     buildTypes {
         release {
-            resValue 'string', "ApiKey", API_KEY_PLACES__SHUSH_ME
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            resValue 'string', "ApiKey", API_KEY_PLACES__SHUSH_ME
+            resValue 'string', "ApiKey", API_KEY__GOOGLE_MAPS
         }
     }
     compileOptions {
@@ -34,7 +33,10 @@ dependencies {
     })
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'com.google.android.gms:play-services-places:17.0.0'
+    //implementation 'com.google.android.gms:play-services-places:17.0.0'
+    implementation 'com.google.android.libraries.places:places:2.3.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     testImplementation 'junit:junit:4.13'
+
+
 }

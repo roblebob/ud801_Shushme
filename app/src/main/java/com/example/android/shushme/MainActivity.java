@@ -18,9 +18,7 @@ package com.example.android.shushme;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.Manifest;
 import android.content.ContentValues;
-import android.content.pm.PackageItemInfo;
 import android.content.pm.PackageManager;
 import android.content.Intent;
 import android.database.Cursor;
@@ -36,12 +34,14 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 import com.example.android.shushme.provider.PlaceContract;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
@@ -63,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     private PlaceListAdapter mAdapter;
     private RecyclerView mRecyclerView;
     private GoogleApiClient mGoogleApiClient;
+    private PlacesClient mPlacesClient;
+    private List<Place> mPlaceList;
+    private List<String> mGuids;
 
 
     /**
@@ -83,11 +86,15 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         mAdapter = new PlaceListAdapter(this, null);
         mRecyclerView.setAdapter( mAdapter);
 
+        mPlaceList = new ArrayList<>();
+
         // Initialize the SDK
         Places.initialize( getApplicationContext(), getString( R.string.ApiKey));
 
         // Create a new PlacesClient instance
-        PlacesClient placesClient = Places.createClient(this);
+        mPlacesClient = Places.createClient(this);
+
+        refreshPlacesData();
     }
 
 
@@ -98,8 +105,8 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         Uri uri = PlaceContract.PlaceEntry.CONTENT_URI;
         Cursor data = getContentResolver() .query( uri, null, null, null, null);
         if (data == null || data.getCount() == 0) return;
-        List<String> guids = new ArrayList<>();
-        while (data.moveToNext()) {  guids.add( data.getString( data.getColumnIndex( PlaceContract.PlaceEntry.COLUMN_PLACE_ID)));  }
+        mGuids = new ArrayList<>();
+        while (data.moveToNext()) {  mGuids.add( data.getString( data.getColumnIndex( PlaceContract.PlaceEntry.COLUMN_PLACE_ID)));  }
 
 
 
@@ -109,7 +116,37 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         // PendingResult<PlaceBuffer> placeResult =
         // Places.GeoDataApi.getPlaceById( mGoogleApiClient, guids.toArray( new String[guids.size()]));
         //TODO[✓] (8) Set the getPlaceById callBack so that onResult calls the Adapter's swapPlaces with the result
-        placeResult .setResultCallback( placeBuffer -> mAdapter.swapPlaces( placeBuffer));
+        //placeResult .setResultCallback( placeBuffer -> mAdapter.swapPlaces( placeBuffer));
+
+
+
+        // Specify the fields to return.
+        List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS);
+
+        // Construct a request object, passing the place ID and fields array.
+        //final FetchPlaceRequest request = FetchPlaceRequest.newInstance(guids, placeFields);
+
+
+        for (String id : mGuids) {
+
+            mPlacesClient
+                    .fetchPlace(FetchPlaceRequest.newInstance(id, placeFields))
+                    .addOnSuccessListener((response) -> {
+                        Place place = response.getPlace();
+                        Log.i(TAG, "Place found: " + place.getName() + "    " + place.getAddress() + "    " + place.getId());
+                        int pos = mGuids.indexOf( place.getId());
+                        mPlaceList.add( pos, place);
+                    })
+                    .addOnFailureListener((exception) -> {
+                        if (exception instanceof ApiException) {
+                            final ApiException apiException = (ApiException) exception;
+                            Log.e(TAG, "Place not found: " + exception.getMessage());
+                            final int statusCode = apiException.getStatusCode();
+                            // TODO: Handle error with given status code.
+                        }
+                    });
+        }
+        mAdapter.swapPlaces(mPlaceList);
     }
 
 
@@ -124,13 +161,13 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
             return;
         }
 
+        refreshPlacesData();
+
         // Start a new Activity for the Place Autocomplete API, this will trigger {@code #onActivityResult} when a place is selected or with the user cancels.
         List<Place.Field> fields = Arrays.asList( Place.Field.ID, Place.Field.NAME);
         Intent intent = new Autocomplete.IntentBuilder( AutocompleteActivityMode.OVERLAY, fields) .build(this);
         startActivityForResult( intent, REQUEST_CODE);
     }
-
-
     /***
      * Called when the Place Autocomplete Activity returns back with a selected place (or after canceling)
      *
@@ -145,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
                 //Place place = PlacePicker.getPlace( this, data);
                 Place place = Autocomplete.getPlaceFromIntent( data);
-                Log.i(TAG,  "Place: " + place.getName() + ", " + place.getId());
+                Log.i(TAG,  "Place: " + place.getName() + ", " + place.getAddress() + ", " + place.getId());
 
                 // Extract the place information from the API
                 String placeName = place.getName();

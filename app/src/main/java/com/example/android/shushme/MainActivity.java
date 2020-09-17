@@ -161,8 +161,6 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
             return;
         }
 
-        refreshPlacesData();
-
         // Start a new Activity for the Place Autocomplete API, this will trigger {@code #onActivityResult} when a place is selected or with the user cancels.
         List<Place.Field> fields = Arrays.asList( Place.Field.ID, Place.Field.NAME);
         Intent intent = new Autocomplete.IntentBuilder( AutocompleteActivityMode.OVERLAY, fields) .build(this);

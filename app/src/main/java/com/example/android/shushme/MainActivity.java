@@ -16,8 +16,6 @@ package com.example.android.shushme;
 * limitations under the License.
 */
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.content.Intent;
@@ -33,12 +31,13 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Toast;
 import com.example.android.shushme.provider.PlaceContract;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
@@ -52,7 +51,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class MainActivity extends AppCompatActivity implements ConnectionCallbacks, OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     // Constants
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -64,8 +63,10 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     private RecyclerView mRecyclerView;
     private GoogleApiClient mGoogleApiClient;
     private PlacesClient mPlacesClient;
+    private GoogleMap mGoogleMap;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
     private List<Place> mPlaceList;
-    private List<String> mGuids;
+    private List<String> mPlacesIdList;
 
 
     /**
@@ -88,11 +89,13 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
         mPlaceList = new ArrayList<>();
 
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        ((SupportMapFragment)   getSupportFragmentManager().findFragmentById( R.id.map_fragment))  .getMapAsync(this);;
         // Initialize the SDK
         Places.initialize( getApplicationContext(), getString( R.string.ApiKey));
-
         // Create a new PlacesClient instance
         mPlacesClient = Places.createClient(this);
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         refreshPlacesData();
     }
@@ -105,8 +108,8 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         Uri uri = PlaceContract.PlaceEntry.CONTENT_URI;
         Cursor data = getContentResolver() .query( uri, null, null, null, null);
         if (data == null || data.getCount() == 0) return;
-        mGuids = new ArrayList<>();
-        while (data.moveToNext()) {  mGuids.add( data.getString( data.getColumnIndex( PlaceContract.PlaceEntry.COLUMN_PLACE_ID)));  }
+        mPlacesIdList = new ArrayList<>();
+        while (data.moveToNext()) {  mPlacesIdList.add( data.getString( data.getColumnIndex( PlaceContract.PlaceEntry.COLUMN_PLACE_ID)));  }
 
 
 
@@ -127,14 +130,14 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         //final FetchPlaceRequest request = FetchPlaceRequest.newInstance(guids, placeFields);
 
 
-        for (String id : mGuids) {
+        for (String id : mPlacesIdList) {
 
             mPlacesClient
                     .fetchPlace(FetchPlaceRequest.newInstance(id, placeFields))
                     .addOnSuccessListener((response) -> {
                         Place place = response.getPlace();
                         Log.i(TAG, "Place found: " + place.getName() + "    " + place.getAddress() + "    " + place.getId());
-                        int pos = mGuids.indexOf( place.getId());
+                        int pos = mPlacesIdList.indexOf( place.getId());
                         mPlaceList.add( pos, place);
                     })
                     .addOnFailureListener((exception) -> {
@@ -225,37 +228,11 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
 
 
+//TODO[✓] (2) call refreshPlacesData in GoogleApiClient's onConnected and in the Add New Place button click event
 
-    /***
-     * Called when the Google API Client is successfully connected
-     *
-     * @param connectionHint Bundle of data provided to clients by Google Play services
-     */
+
     @Override
-    public void onConnected(@Nullable Bundle connectionHint) {
-        //TODO[✓] (2) call refreshPlacesData in GoogleApiClient's onConnected and in the Add New Place button click event
-        refreshPlacesData();
-        Log.i(TAG, "API Client Connection Successful!");
-    }
+    public void onMapReady(GoogleMap googleMap) {
 
-    /***
-     * Called when the Google API Client is suspended
-     *
-     * @param cause cause The reason for the disconnection. Defined by constants CAUSE_*.
-     */
-    @Override
-    public void onConnectionSuspended(int cause) {
-        Log.i(TAG, "API Client Connection Suspended!");
     }
-
-    /***
-     * Called when the Google API Client failed to connect to Google Play Services
-     *
-     * @param result A ConnectionResult that can be used for resolving the error
-     */
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult result) {
-        Log.e(TAG, "API Client Connection Failed!");
-    }
-
 }

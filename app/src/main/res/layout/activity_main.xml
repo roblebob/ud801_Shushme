@@ -11,8 +11,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.-->
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -21,58 +20,58 @@
 
     <TextView
         android:id="@+id/settings_heading_tv"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/settings_label"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="4dp"
-        android:paddingRight="8dp"
-        android:paddingBottom="4dp"
-        android:src="@drawable/ic_globe_primary_24dp"
-        app:layout_constraintTop_toBottomOf="@+id/settings_heading_tv" />
-
-
-
-
-    <Switch
-        android:id="@+id/enable_switch"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:text="@string/enable_geofences"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-    <TextView
-        android:id="@+id/location_permissions_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:text="@string/location_permissions"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-        app:layout_constraintStart_toEndOf="@+id/imageView4"
-        app:layout_constraintTop_toTopOf="@+id/location_permission_iv" />
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/location_permission_iv"
+         />
 
     <ImageView
         android:id="@+id/location_permission_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingStart="4dp"
+        android:paddingLeft="4dp"
         android:paddingTop="4dp"
-        android:paddingRight="8dp"
+        android:paddingEnd="4dp"
+        android:paddingRight="4dp"
         android:paddingBottom="4dp"
         android:src="@drawable/ic_my_location_primary_24dp"
-        app:layout_constraintTop_toBottomOf="@+id/settings_heading_tv" />
+        app:layout_constraintTop_toBottomOf="@+id/settings_heading_tv"
+        app:layout_constraintStart_toStartOf="@+id/settings_heading_tv"
+
+        app:layout_constraintBottom_toTopOf="@+id/enable_geofences_iv"
+        />
+
+
+
+
+    <TextView
+        android:id="@+id/location_permissions_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:text="@string/location_permissions"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/location_permission_iv"
+
+        app:layout_constraintEnd_toStartOf="@+id/location_permission_checkbox"
+        app:layout_constraintStart_toEndOf="@+id/location_permission_iv"
+        app:layout_constraintTop_toTopOf="@+id/location_permission_iv" />
+
 
 
     <CheckBox
@@ -80,48 +79,120 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:onClick="onLocationPermissionClicked"
         app:layout_constraintBottom_toBottomOf="@+id/location_permissions_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/location_permissions_tv" />
 
+    <ImageView
+        android:id="@+id/enable_geofences_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingStart="4dp"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:paddingRight="4dp"
+        android:paddingBottom="4dp"
+        android:src="@drawable/ic_globe_primary_24dp"
+        app:layout_constraintBottom_toTopOf="@+id/map_fragment"
+        app:layout_constraintStart_toStartOf="@+id/settings_heading_tv"
+        app:layout_constraintTop_toBottomOf="@+id/location_permission_iv"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Switch
+        android:id="@+id/enable_switch"
+        android:layout_width="0dp"
+        android:layout_height="10dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:text="@string/enable_geofences"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toBottomOf="@+id/enable_geofences_iv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/enable_geofences_iv"
+        app:layout_constraintTop_toTopOf="@+id/enable_geofences_iv" />
+
+
+
+    <fragment
+        android:id="@+id/map_fragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toTopOf="@+id/locations_heading_tv"
+        app:layout_constraintEnd_toEndOf="@+id/location_permission_checkbox"
+        app:layout_constraintStart_toStartOf="@+id/location_permission_iv"
+        app:layout_constraintTop_toBottomOf="@+id/enable_geofences_iv"
+        tools:context=".MainActivity" />
+
+
+    <TextView
+        android:id="@+id/locations_heading_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/location_list"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintTop_toBottomOf="@+id/map_fragment"
+        app:layout_constraintStart_toStartOf="@+id/location_permission_iv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/add_new_location_button"
+        />
+
 
     <Button
         android:id="@+id/add_new_location_button"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:background="@color/colorPrimary"
         android:onClick="onAddPlaceButtonClicked"
         android:text="@string/add_new_location"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
         android:textColor="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/locations_heading_tv"
+        app:layout_constraintEnd_toEndOf="@+id/map_fragment"
+        app:layout_constraintStart_toStartOf="@+id/locations_heading_tv"
+        app:layout_constraintBottom_toTopOf="@+id/autocomplete_fragment"
+        />
 
-    <TextView
-        android:id="@+id/locations_heading_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/location_list"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="@color/colorPrimaryDark"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_new_location_button" />
+
+    <fragment
+        android:id="@+id/autocomplete_fragment"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        android:layout_width="match_parent"
+        android:layout_height="333dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/add_new_location_button"
+        app:layout_constraintStart_toStartOf="@+id/add_new_location_button"
+        app:layout_constraintEnd_toEndOf="@+id/add_new_location_button"
+        app:layout_constraintBottom_toTopOf="@+id/places_list_recycler_view"
+        />
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/places_list_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/locations_heading_tv" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:isScrollContainer="true"
+        app:layout_constraintTop_toBottomOf="@+id/autocomplete_fragment"
+        app:layout_constraintEnd_toEndOf="@+id/add_new_location_button"
+        app:layout_constraintStart_toStartOf="@+id/add_new_location_button"
+        app:layout_constraintBottom_toTopOf="@+id/powered_by_google_iv"
 
+        />
 
 
     <!-- TODO [✓] (9) Add the "Powered by Google" logo and a link to Google's privacy policy here -->
-
 
 
     <ImageView
@@ -131,9 +202,11 @@
         android:layout_gravity="center"
         android:padding="4dp"
         android:src="@drawable/powered_by_google_on_white"
-        app:layout_constraintBottom_toTopOf="@+id/google_privacy_policy_tv"
+        app:layout_constraintTop_toBottomOf="@+id/places_list_recycler_view"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/google_privacy_policy_tv"
+        />
 
 
     <TextView
@@ -145,8 +218,10 @@
         android:paddingBottom="4dp"
         android:text="@string/privacy"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/powered_by_google_iv"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

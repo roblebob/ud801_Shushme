@@ -54,10 +54,13 @@ public class PlaceListAdapter extends RecyclerView.Adapter< PlaceListAdapter.Pla
     }
 
     //TODO[✓] (7) Implement a public method swapPlaces that replaces the current mPlaces PlaceBuffer with a new one
-    public void swapPlaces(List<Place> placeList) {
-        mPlaceList = placeList;
-        if (mPlaceList != null) { notifyDataSetChanged(); }
+    public void add(int pos, Place place) {
+        mPlaceList.add(pos, place);
     }
+
+
+
+
 
     @Override
     public int getItemCount() {

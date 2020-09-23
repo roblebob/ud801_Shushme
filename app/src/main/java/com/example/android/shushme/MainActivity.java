@@ -22,6 +22,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,7 +34,8 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 import com.example.android.shushme.provider.PlaceContract;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -65,8 +68,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static int REQUEST_CODE = 1;
 
     // Member variables
-    private List<Place> mPlaceList;
-    private List<String> mPlacesIdList;
+
     private PlaceListAdapter mAdapter;
     private RecyclerView mRecyclerView;
     private PlacesClient mPlacesClient;
@@ -83,8 +85,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView( R.layout.activity_main);
 
 
-        mPlaceList = new ArrayList<>();
-        mAdapter = new PlaceListAdapter(this, null); // TODO[✓] (3) Modify the Adapter to take a PlaceBuffer in the constructor
+        mAdapter = new PlaceListAdapter(this, new ArrayList<Place>()); // TODO[✓] (3) Modify the Adapter to take a PlaceBuffer in the constructor
         mRecyclerView = (RecyclerView) findViewById( R.id.places_list_recycler_view);
         mRecyclerView.setLayoutManager( new LinearLayoutManager(this));
         mRecyclerView.setAdapter( mAdapter);
@@ -116,34 +117,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Uri uri = PlaceContract.PlaceEntry.CONTENT_URI;
         Cursor data = getContentResolver() .query( uri, null, null, null, null);
         if (data == null || data.getCount() == 0) return;
-        mPlacesIdList = new ArrayList<>();
-        while (data.moveToNext()) {  mPlacesIdList.add( data.getString( data.getColumnIndex( PlaceContract.PlaceEntry.COLUMN_PLACE_ID)));  }
+        List<String> placesIdList = new ArrayList<>();
+        while (data.moveToNext()) {  placesIdList.add( data.getString( data.getColumnIndex( PlaceContract.PlaceEntry.COLUMN_PLACE_ID)));  }
 
 
 
         // - Calls Places.GeoDataApi.getPlaceById with that list of IDs
         // Note: When calling Places.GeoDataApi.getPlaceById use the same GoogleApiClient created in MainActivity's onCreate (you will have to declare it as a private member)
 
-        // PendingResult<PlaceBuffer> placeResult =
-        // Places.GeoDataApi.getPlaceById( mGoogleApiClient, guids.toArray( new String[guids.size()]));
+        // PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById( mGoogleApiClient, guids.toArray( new String[guids.size()]));
         //TODO[✓] (8) Set the getPlaceById callBack so that onResult calls the Adapter's swapPlaces with the result
         //placeResult .setResultCallback( placeBuffer -> mAdapter.swapPlaces( placeBuffer));
 
+//        placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
+//            @Override
+//            public void onResult(@NonNull PlaceBuffer places) {
+//                mAdapter.swapPlaces(places);
+//
+//            }
+//        });
 
 
 
+        for (String id : placesIdList) {
 
-        for (String id : mPlacesIdList) {
-
-            // Specify the fields to return.
             List<Place.Field> placeFields = Arrays.asList(  Place.Field.ID,  Place.Field.NAME,  Place.Field.ADDRESS);
+            FetchPlaceRequest request = FetchPlaceRequest .builder(id, placeFields) .build();
 
-            mPlacesClient
-                    .fetchPlace(  FetchPlaceRequest .newInstance(  id, placeFields))
+            mPlacesClient .fetchPlace( request)
                     .addOnSuccessListener( (response) -> {
                         Place place = response .getPlace();
-                        int pos = mPlacesIdList .indexOf(  place.getId());
-                        mPlaceList .add(  pos, place);
+                        int pos = placesIdList .indexOf(  place.getId());
+                        mAdapter .add(  pos, place);
                         Log.i(TAG, "[" + id + "]:  " + "Place found: " + place.getName() + "    " + place.getAddress() + "    " + place.getId()  +  "   ,  entered at position " + pos);
                     })
                     .addOnFailureListener((exception) -> {
@@ -156,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     });
         }
 
-        mAdapter.swapPlaces(mPlaceList);
+        mAdapter.notifyDataSetChanged();
     }
 
 

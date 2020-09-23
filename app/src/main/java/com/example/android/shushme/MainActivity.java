@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.example.android.shushme.provider.PlaceContract;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,7 +45,12 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,46 +65,48 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static int REQUEST_CODE = 1;
 
     // Member variables
+    private List<Place> mPlaceList;
+    private List<String> mPlacesIdList;
     private PlaceListAdapter mAdapter;
     private RecyclerView mRecyclerView;
-    private GoogleApiClient mGoogleApiClient;
     private PlacesClient mPlacesClient;
     private GoogleMap mGoogleMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    private List<Place> mPlaceList;
-    private List<String> mPlacesIdList;
+    private SupportMapFragment mSupportMapFragment;
+    private AutocompleteSupportFragment mAutocompleteFragment;
 
 
-    /**
-     * Called when the activity is starting
-     *
-     * @param savedInstanceState The Bundle that contains the data supplied in onSaveInstanceState
-     */
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate( Bundle savedInstanceState) {
         super.onCreate( savedInstanceState);
         setContentView( R.layout.activity_main);
 
-        // Set up the recycler view
-        mRecyclerView = (RecyclerView) findViewById( R.id.places_list_recycler_view);
-        mRecyclerView.setLayoutManager( new LinearLayoutManager(this));
-
-        // TODO[✓] (3) Modify the Adapter to take a PlaceBuffer in the constructor
-        mAdapter = new PlaceListAdapter(this, null);
-        mRecyclerView.setAdapter( mAdapter);
 
         mPlaceList = new ArrayList<>();
+        mAdapter = new PlaceListAdapter(this, null); // TODO[✓] (3) Modify the Adapter to take a PlaceBuffer in the constructor
+        mRecyclerView = (RecyclerView) findViewById( R.id.places_list_recycler_view);
+        mRecyclerView.setLayoutManager( new LinearLayoutManager(this));
+        mRecyclerView.setAdapter( mAdapter);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        ((SupportMapFragment)   getSupportFragmentManager().findFragmentById( R.id.map_fragment))  .getMapAsync(this);;
-        // Initialize the SDK
+
+        mSupportMapFragment = (SupportMapFragment)  getSupportFragmentManager() .findFragmentById( R.id.map_fragment);
+        mSupportMapFragment .getMapAsync(this);
+
+        mAutocompleteFragment = (AutocompleteSupportFragment)  getSupportFragmentManager() .findFragmentById( R.id.autocomplete_fragment);
+        
         Places.initialize( getApplicationContext(), getString( R.string.ApiKey));
-        // Create a new PlacesClient instance
         mPlacesClient = Places.createClient(this);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+
         refreshPlacesData();
     }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 
 
     // TODO[✓] (1) Implement a method called refreshPlacesData that:
@@ -123,86 +131,63 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
-        // Specify the fields to return.
-        List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS);
-
-        // Construct a request object, passing the place ID and fields array.
-        //final FetchPlaceRequest request = FetchPlaceRequest.newInstance(guids, placeFields);
 
 
         for (String id : mPlacesIdList) {
 
+            // Specify the fields to return.
+            List<Place.Field> placeFields = Arrays.asList(  Place.Field.ID,  Place.Field.NAME,  Place.Field.ADDRESS);
+
             mPlacesClient
-                    .fetchPlace(FetchPlaceRequest.newInstance(id, placeFields))
-                    .addOnSuccessListener((response) -> {
-                        Place place = response.getPlace();
-                        Log.i(TAG, "Place found: " + place.getName() + "    " + place.getAddress() + "    " + place.getId());
-                        int pos = mPlacesIdList.indexOf( place.getId());
-                        mPlaceList.add( pos, place);
+                    .fetchPlace(  FetchPlaceRequest .newInstance(  id, placeFields))
+                    .addOnSuccessListener( (response) -> {
+                        Place place = response .getPlace();
+                        int pos = mPlacesIdList .indexOf(  place.getId());
+                        mPlaceList .add(  pos, place);
+                        Log.i(TAG, "[" + id + "]:  " + "Place found: " + place.getName() + "    " + place.getAddress() + "    " + place.getId()  +  "   ,  entered at position " + pos);
                     })
                     .addOnFailureListener((exception) -> {
                         if (exception instanceof ApiException) {
                             final ApiException apiException = (ApiException) exception;
                             Log.e(TAG, "Place not found: " + exception.getMessage());
-                            final int statusCode = apiException.getStatusCode();
+                            final int statusCode = apiException .getStatusCode();
                             // TODO: Handle error with given status code.
                         }
                     });
         }
+
         mAdapter.swapPlaces(mPlaceList);
     }
 
 
-    /***
-     * Button Click event handler to handle clicking the "Add new location" Button
-     *
-     * @param view
-     */
+
     public void onAddPlaceButtonClicked(View view) {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, getString(R.string.need_location_permission_message), Toast.LENGTH_LONG).show();
             return;
         }
 
-        // Start a new Activity for the Place Autocomplete API, this will trigger {@code #onActivityResult} when a place is selected or with the user cancels.
-        List<Place.Field> fields = Arrays.asList( Place.Field.ID, Place.Field.NAME);
-        Intent intent = new Autocomplete.IntentBuilder( AutocompleteActivityMode.OVERLAY, fields) .build(this);
-        startActivityForResult( intent, REQUEST_CODE);
-    }
-    /***
-     * Called when the Place Autocomplete Activity returns back with a selected place (or after canceling)
-     *
-     * @param requestCode The request code passed when calling startActivityForResult
-     * @param resultCode  The result code specified by the second activity
-     * @param data        The Intent that carries the result data.
-     */
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mAutocompleteFragment .setPlaceFields(  Arrays.asList(Place.Field.ID, Place.Field.NAME));
 
-        if (requestCode == REQUEST_CODE){
-            if (resultCode == RESULT_OK) {
-
-                //Place place = PlacePicker.getPlace( this, data);
-                Place place = Autocomplete.getPlaceFromIntent( data);
-                Log.i(TAG,  "Place: " + place.getName() + ", " + place.getAddress() + ", " + place.getId());
-
-                // Extract the place information from the API
-                String placeName = place.getName();
-                String placeAddress = place.getAddress();
-                String placeID = place.getId();
-
+        mAutocompleteFragment .setOnPlaceSelectedListener(  new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected( @NotNull Place place) {
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
                 // Insert a new place into DB
                 ContentValues contentValues = new ContentValues();
-                contentValues.put( PlaceContract.PlaceEntry.COLUMN_PLACE_ID, placeID);
-                getContentResolver().insert( PlaceContract.PlaceEntry.CONTENT_URI, contentValues);
+                contentValues .put(  PlaceContract.PlaceEntry.COLUMN_PLACE_ID,  place.getId());
+                getContentResolver() .insert(  PlaceContract.PlaceEntry.CONTENT_URI,  contentValues);
 
                 refreshPlacesData();
-
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) { Log.i(TAG, Objects.requireNonNull( Autocomplete.getStatusFromIntent(data) .getStatusMessage()));
-            } else if (resultCode == RESULT_CANCELED) { /* The user canceled the operation. */}
-            return;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+            }
+            @Override
+            public void onError( @NotNull Status status) {
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
     }
+
+
 
     @Override
     public void onResume() {

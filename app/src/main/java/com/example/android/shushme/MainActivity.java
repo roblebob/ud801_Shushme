@@ -24,12 +24,17 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.Group;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.service.autofill.FillEventHistory;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 import com.example.android.shushme.provider.PlaceContract;
@@ -121,29 +126,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         while (data.moveToNext()) {  placesIdList.add( data.getString( data.getColumnIndex( PlaceContract.PlaceEntry.COLUMN_PLACE_ID)));  }
 
 
-
-        // - Calls Places.GeoDataApi.getPlaceById with that list of IDs
-        // Note: When calling Places.GeoDataApi.getPlaceById use the same GoogleApiClient created in MainActivity's onCreate (you will have to declare it as a private member)
-
-        // PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById( mGoogleApiClient, guids.toArray( new String[guids.size()]));
-        //TODO[✓] (8) Set the getPlaceById callBack so that onResult calls the Adapter's swapPlaces with the result
-        //placeResult .setResultCallback( placeBuffer -> mAdapter.swapPlaces( placeBuffer));
-
-//        placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
-//            @Override
-//            public void onResult(@NonNull PlaceBuffer places) {
-//                mAdapter.swapPlaces(places);
-//
-//            }
-//        });
-
-
-
+        // - Sends for each entry the request to gain the detailed Place information
         for (String id : placesIdList) {
 
             List<Place.Field> placeFields = Arrays.asList(  Place.Field.ID,  Place.Field.NAME,  Place.Field.ADDRESS);
             FetchPlaceRequest request = FetchPlaceRequest .builder(id, placeFields) .build();
 
+            //TODO[✓] (8) Set the getPlaceById callBack so that onResult calls the Adapter's swapPlaces with the result
             mPlacesClient .fetchPlace( request)
                     .addOnSuccessListener( (response) -> {
                         Place place = response .getPlace();
@@ -160,8 +149,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     });
         }
-
-        mAdapter.notifyDataSetChanged();
     }
 
 
@@ -171,9 +158,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(this, getString(R.string.need_location_permission_message), Toast.LENGTH_LONG).show();
             return;
         }
+        ((Button) findViewById(R.id.add_new_location_button)) .setVisibility( View.INVISIBLE);
+        ((Group) findViewById(R.id.group)) .setVisibility( View.VISIBLE);
 
-        mAutocompleteFragment .setPlaceFields(  Arrays.asList(Place.Field.ID, Place.Field.NAME));
-
+        mAutocompleteFragment .setPlaceFields(  Arrays.asList(Place.Field.ID,  Place.Field.NAME));
         mAutocompleteFragment .setOnPlaceSelectedListener(  new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected( @NotNull Place place) {
@@ -184,6 +172,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 getContentResolver() .insert(  PlaceContract.PlaceEntry.CONTENT_URI,  contentValues);
 
                 refreshPlacesData();
+
+                ((Group) findViewById(R.id.group)) .setVisibility( View.INVISIBLE);
+                ((Button) findViewById(R.id.add_new_location_button)) .setVisibility(View.VISIBLE);
             }
             @Override
             public void onError( @NotNull Status status) {

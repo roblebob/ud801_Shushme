@@ -28,6 +28,7 @@ import androidx.constraintlayout.widget.Group;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,6 +37,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.Toast;
 import com.example.android.shushme.provider.PlaceContract;
 import com.google.android.gms.common.api.ApiException;
@@ -189,12 +191,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onResume() {
 
         // Initialize location permissions checkbox
-        CheckBox locationPermissions = (CheckBox) findViewById( R.id.location_permission_checkbox);
+        ImageView locationPermissions = (ImageView) findViewById( R.id.location_permission_iv);
         if (ActivityCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            locationPermissions.setChecked(false);
+            locationPermissions.setAlpha(ResourcesCompat.getFloat( this.getResources(), R.dimen.OFF));
         } else {
-            locationPermissions.setChecked(true);
-            locationPermissions.setEnabled(false);
+            locationPermissions.setAlpha(ResourcesCompat.getFloat( this.getResources(), R.dimen.ON));
         }
 
         super.onResume();

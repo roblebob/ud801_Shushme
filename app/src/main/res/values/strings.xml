@@ -6,7 +6,6 @@
     <string name="location_permissions_granted_message">Location Permissions Granted</string>
     <string name="setting_enabled" translatable="false">EnabledSetting</string>
     <string name="settings_label">Settings</string>
-    <string name="location_permission_content_description">Indicates, if the detailed location permission has been granted</string>
     <string name="enable_geofences">Enable Geofences</string>
     <string name="privacy">http://www.google.com/policies/privacy</string>
 </resources>

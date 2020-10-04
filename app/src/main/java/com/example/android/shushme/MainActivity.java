@@ -23,26 +23,20 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.Group;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.service.autofill.FillEventHistory;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.example.android.shushme.provider.PlaceContract;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -53,18 +47,14 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -191,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onResume() {
 
         // Initialize location permissions checkbox
-        ImageView locationPermissions = (ImageView) findViewById( R.id.location_permission_iv);
+        ImageView locationPermissions = (ImageView) findViewById( R.id.location_permission);
         if (ActivityCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             locationPermissions.setAlpha(ResourcesCompat.getFloat( this.getResources(), R.dimen.OFF));
         } else {

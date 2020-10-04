@@ -11,179 +11,140 @@
  See the License for the specific language governing permissions and
  limitations under the License.-->
 
-<androidx.constraintlayout.motion.widget.MotionLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimaryLight"
+    android:backgroundTint="@color/colorPrimaryLight"
     android:fitsSystemWindows="true"
     android:isScrollContainer="true"
+    app:layoutDescription="@xml/activity_main_scene"
     tools:context=".MainActivity">
 
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar_layout"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/title_heading_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:elevation="2dp"
+        android:text="@string/app_name"
+        android:textColor="@color/colorWhite"
+        android:textSize="27sp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@id/guideline_left"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/location_permission"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/ic_location_permission_24dp"
+        android:contentDescription="@string/location_permission_content_description"
+        android:elevation="2dp"
+        android:onClick="onLocationPermissionClicked"
+        app:layout_constraintBottom_toBottomOf="@+id/title_heading_tv"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="@id/guideline_right"
+        app:layout_constraintTop_toTopOf="@id/title_heading_tv" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/enable_geofences"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/ic_enable_geofences_24dp"
+        android:elevation="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/powered_by_google"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="@id/guideline_right"
+        app:layout_constraintStart_toStartOf="@id/location_permission" />
+
+
+    <ImageView
+        android:id="@+id/powered_by_google"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
-        app:expandedTitleGravity="top"
-        app:layout_constraintBottom_toTopOf="@+id/map_fragment"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:background="@drawable/powered_by_google__toggle_on"
+        android:elevation="2dp"
+        app:layout_constraintBottom_toTopOf="@id/retile"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="@id/guideline_right" />
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            android:backgroundTint="@color/colorPrimaryDark"
-            app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
-            app:titleTextColor="@android:color/white">
-
-
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/toolbar_constraint_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-
-                <TextView
-                    android:id="@+id/textView"
-                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTintMode="add"
-                    android:text="@string/app_name"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="36sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap" />
-
-
-
-
-                <ImageView
-                    android:id="@+id/powered_by_google_iv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:padding="4dp"
-                    android:src="@drawable/powered_by_google_on_white"
-                    app:layout_constraintBottom_toBottomOf="@+id/location_permission_iv"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap" />
-
-
-                <TextView
-                    android:id="@+id/google_privacy_policy_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:autoLink="web"
-                    android:gravity="center_horizontal"
-                    android:paddingBottom="4dp"
-                    android:text="@string/privacy"
-                    android:textAlignment="center"
-                    android:textSize="7sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/powered_by_google_iv"
-                    app:layout_scrollFlags="enterAlways" />
-
-
-                <ImageView
-                    android:id="@+id/location_permission_iv"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:alpha="@dimen/OFF"
-                    android:onClick="onLocationPermissionClicked"
-                    android:paddingStart="4dp"
-                    android:paddingLeft="4dp"
-                    android:paddingTop="4dp"
-                    android:paddingEnd="4dp"
-                    android:paddingRight="4dp"
-                    android:paddingBottom="4dp"
-                    android:src="@drawable/ic_my_location_primary_24dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView"
-                    app:layout_constraintEnd_toStartOf="@+id/enable_geofences_iv"
-                    app:layout_constraintStart_toEndOf="@+id/textView"
-                    app:layout_constraintTop_toTopOf="@+id/textView"
-                    app:layout_scrollFlags="enterAlways" />
-
-                <ImageView
-                    android:id="@+id/enable_geofences_iv"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:alpha="@dimen/OFF"
-                    android:paddingStart="4dp"
-                    android:paddingLeft="4dp"
-                    android:paddingTop="4dp"
-                    android:paddingRight="4dp"
-                    android:paddingBottom="4dp"
-                    android:src="@drawable/ic_globe_primary_24dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/location_permission_iv"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/location_permission_iv"
-                    app:layout_constraintTop_toTopOf="@+id/location_permission_iv"
-                    app:layout_constraintVertical_bias="1.0"
-                    app:layout_constraintVertical_chainStyle="packed"
-                    app:layout_scrollFlags="enterAlways" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-    </com.google.android.material.appbar.AppBarLayout>
+    <TextView
+        android:id="@+id/google_privacy_policy_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoLink="web"
+        android:elevation="2dp"
+        android:gravity="center_horizontal"
+        android:paddingBottom="4dp"
+        android:text="@string/privacy"
+        android:textAlignment="center"
+        android:textSize="7sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/map_fragment"
+        app:layout_constraintEnd_toEndOf="@id/map_fragment" />
 
 
     <fragment
         android:id="@+id/map_fragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintBottom_toTopOf="@+id/locations_heading_tv"
-        app:layout_constraintDimensionRatio="2:1"
+        app:layout_constraintBottom_toTopOf="@+id/retile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         tools:context=".MainActivity" />
 
 
-    <TextView
-        android:id="@+id/locations_heading_tv"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@color/colorPrimaryLight"
-        android:text="@string/location_list"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="@color/colorWhite"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintBottom_toTopOf="@+id/places_list_recycler_view"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/retile"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/map_fragment" />
+        tools:layout_editor_absoluteY="339dp" />
+
+    <ImageView
+        android:id="@+id/arrow_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/arrow_drop_up_24px" />
+
+    <ImageView
+        android:id="@+id/arrow_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/arrow_drop_down_24px" />
+
+
+
+
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/places_list_recycler_view"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+
+        android:paddingTop="20dp"
+
+        android:paddingBottom="20dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toTopOf="@+id/add_new_location_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/locations_heading_tv" />
-
-
-    <!-- TODO [✓] (9) Add the "Powered by Google" logo and a link to Google's privacy policy here -->
-
+        app:layout_constraintEnd_toEndOf="@id/guideline_right"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/guideline_left"
+        app:layout_constraintTop_toBottomOf="@+id/retile"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/add_new_location_button"
@@ -205,9 +166,9 @@
         android:id="@+id/current_location_iv"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:src="@drawable/ic_my_location_primary_24dp"
+        android:src="@drawable/ic_location_permission_24dp"
         app:layout_constraintBottom_toBottomOf="@+id/add_new_location_button"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="@+id/add_new_location_button"
         app:layout_constraintTop_toTopOf="@+id/add_new_location_button" />
@@ -228,6 +189,22 @@
         android:layout_height="wrap_content"
         android:visibility="visible"
         app:constraint_referenced_ids="current_location_iv,autocomplete_fragment" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="20dp" />
+
 
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

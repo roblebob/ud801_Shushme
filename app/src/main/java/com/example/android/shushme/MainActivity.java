@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         mAdapter = new PlaceListAdapter(this, new ArrayList<Place>()); // TODO[✓] (3) Modify the Adapter to take a PlaceBuffer in the constructor
-        mRecyclerView = (RecyclerView) findViewById( R.id.places_list_recycler_view);
+        mRecyclerView = (RecyclerView) findViewById( R.id.recylerview);
         mRecyclerView.setLayoutManager( new LinearLayoutManager(this));
         mRecyclerView.setAdapter( mAdapter);
 

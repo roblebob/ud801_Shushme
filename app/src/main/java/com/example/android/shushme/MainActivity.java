@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(this, getString(R.string.need_location_permission_message), Toast.LENGTH_LONG).show();
             return;
         }
-        ((Button) findViewById(R.id.add_new_location_button)) .setVisibility( View.INVISIBLE);
+        ((Button) findViewById(R.id.add_new_location)) .setVisibility( View.INVISIBLE);
         ((Group) findViewById(R.id.group)) .setVisibility( View.VISIBLE);
 
         mAutocompleteFragment .setPlaceFields(  Arrays.asList(Place.Field.ID,  Place.Field.NAME));
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 refreshPlacesData();
 
                 ((Group) findViewById(R.id.group)) .setVisibility( View.INVISIBLE);
-                ((Button) findViewById(R.id.add_new_location_button)) .setVisibility(View.VISIBLE);
+                ((Button) findViewById(R.id.add_new_location)) .setVisibility(View.VISIBLE);
             }
             @Override
             public void onError( @NotNull Status status) {

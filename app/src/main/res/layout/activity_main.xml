@@ -11,7 +11,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.-->
 
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -20,17 +20,28 @@
     android:backgroundTint="@color/colorPrimaryLight"
     android:fitsSystemWindows="true"
     android:isScrollContainer="true"
-    app:layoutDescription="@xml/activity_main_scene"
     tools:context=".MainActivity">
 
 
+    <androidx.constraintlayout.helper.widget.Layer
+        android:id="@+id/map_layer"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:constraint_referenced_ids="title_heading,map_fragment"
+        />
+
+
     <TextView
-        android:id="@+id/title_heading_tv"
+        android:id="@+id/title_heading"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:elevation="2dp"
         android:text="@string/app_name"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorBlack"
         android:textSize="27sp"
         android:textStyle="bold"
         android:visibility="visible"
@@ -38,75 +49,45 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <ImageView
-        android:id="@+id/location_permission"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/ic_location_permission_24dp"
-        android:elevation="2dp"
-        android:onClick="onLocationPermissionClicked"
-        app:layout_constraintBottom_toBottomOf="@+id/title_heading_tv"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="@id/guideline_right"
-        app:layout_constraintTop_toTopOf="@id/title_heading_tv"
-        android:contentDescription="TODO" />
-
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/enable_geofences"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/ic_enable_geofences_24dp"
-        android:elevation="2dp"
-        app:layout_constraintBottom_toTopOf="@+id/powered_by_google"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="@id/guideline_right"
-        app:layout_constraintStart_toStartOf="@id/location_permission" />
-
-
-    <ImageView
-        android:id="@+id/powered_by_google"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/powered_by_google__toggle_on"
-        android:elevation="2dp"
-        app:layout_constraintBottom_toTopOf="@id/retile"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="@id/guideline_right" />
-
-    <TextView
-        android:id="@+id/google_privacy_policy_tv"
-        style="@style/Theme.MaterialComponents.NoActionBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autoLink="web"
-        android:elevation="2dp"
-        android:gravity="center_horizontal"
-        android:paddingBottom="4dp"
-        android:text="@string/privacy"
-        android:textAlignment="center"
-        android:textSize="7sp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/map_fragment"
-        app:layout_constraintEnd_toEndOf="@id/map_fragment" />
-
-
     <fragment
         android:id="@+id/map_fragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:minHeight="100dp"
-        app:layout_constraintBottom_toTopOf="@+id/retile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/map_layer"
+        app:layout_constraintEnd_toEndOf="@id/map_layer"
+        app:layout_constraintStart_toStartOf="@id/map_layer"
+        app:layout_constraintTop_toTopOf="@id/map_layer"
         app:layout_constraintVertical_bias="1.0"
         tools:context=".MainActivity" />
 
 
+
+
+
+
+
+
+
+
+
+
+
+    <androidx.constraintlayout.helper.widget.Layer
+        android:id="bar_layer"
+        app:constraint_referenced_ids="bar,location_permission,add_new_location_,enable_geofences"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintTop_toTopOf="@id/map_layer"
+        app:layout_constraintBottom_toTopOf="@id/list_layer"
+
+        />
+
+
     <View
-        android:id="@+id/retile"
+        android:id="@+id/bar"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:background="@color/colorPrimary"
@@ -117,29 +98,84 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.348" />
 
-    <ImageView
-        android:id="@+id/arrow_up"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/arrow_drop_up_24px"
-        app:layout_constraintTop_toTopOf="@+id/retile"
-        app:layout_constraintStart_toStartOf="@+id/retile"
-        app:layout_constraintEnd_toEndOf="@+id/retile"
-        app:layout_constraintBottom_toTopOf="@+id/arrow_down"/>
+    <ImageButton
+        android:id="@+id/location_permission"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_location_permission_24dp"
+        android:elevation="2dp"
+        android:onClick="onLocationPermissionClicked"
+        app:layout_constraintBottom_toBottomOf="@+id/bar"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toEndOf="@id/guideline_left"
+        app:layout_constraintTop_toTopOf="@id/bar"
+        app:layout_constraintEnd_toStartOf="@id/add_new_location_"
+        android:contentDescription="TODO" />
 
-    <ImageView
-        android:id="@+id/arrow_down"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/arrow_drop_down_24px"
-        app:layout_constraintTop_toBottomOf="@+id/arrow_up"
-        app:layout_constraintBottom_toBottomOf="@+id/retile"
-        app:layout_constraintStart_toStartOf="@+id/retile"
-        app:layout_constraintEnd_toEndOf="@+id/retile"/>
+    <ImageButton
+        android:id="@+id/add_new_location_"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:elevation="2dp"
+        android:src="@drawable/add_new_location"
+        app:layout_constraintTop_toTopOf="@id/bar"
+        app:layout_constraintBottom_toBottomOf="@id/bar"
+        app:layout_constraintStart_toEndOf="@id/location_permission"
+        app:layout_constraintEnd_toStartOf="@id/enable_geofences"
+        />
+
+    <ImageSwitcher
+        android:id="@+id/enable_geofences"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/ic_enable_geofences_24dp"
+        android:elevation="2dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@id/guideline_right"
+        app:layout_constraintStart_toStartOf="@id/location_permission"
+        app:layout_constraintTop_toTopOf="@id/bar"
+        app:layout_constraintBottom_toBottomOf="@id/bar"
+        />
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <androidx.constraintlayout.helper.widget.Layer
+        android:id="list_layer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:constraint_referenced_ids="autocomplete_fragment,places_list_recycler_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        />
+
+
+
+    <fragment
+        android:id="@+id/autocomplete_fragment"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/add_new_location"
+        app:layout_constraintEnd_toEndOf="@id/guideline_right"
+        app:layout_constraintStart_toEndOf="@id/guideline_left"
+        app:layout_constraintTop_toTopOf="@+id/list_layer" />
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -151,56 +187,15 @@
 
         android:paddingBottom="20dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintBottom_toTopOf="@+id/add_new_location_button"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline_right"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/guideline_left"
-        app:layout_constraintTop_toBottomOf="@+id/retile"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="bar"
         app:layout_constraintVertical_bias="1.0" />
 
-    <Button
-        android:id="@+id/add_new_location_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:onClick="onAddPlaceButtonClicked"
-        android:text="@string/add_new_location"
-        android:textAppearance="@style/TextAppearance.AppCompat.Button"
-        android:textColor="@android:color/white"
-        android:visibility="visible"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 
-    <ImageView
-        android:id="@+id/current_location_iv"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:src="@drawable/ic_location_permission_24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/add_new_location_button"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="@+id/add_new_location_button"
-        app:layout_constraintTop_toTopOf="@+id/add_new_location_button" />
-
-    <fragment
-        android:id="@+id/autocomplete_fragment"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/add_new_location_button"
-        app:layout_constraintEnd_toEndOf="@+id/add_new_location_button"
-        app:layout_constraintStart_toEndOf="@+id/current_location_iv"
-        app:layout_constraintTop_toTopOf="@+id/add_new_location_button" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:constraint_referenced_ids="current_location_iv,autocomplete_fragment" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_left"
@@ -219,4 +214,4 @@
 
 
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

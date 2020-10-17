@@ -52,8 +52,6 @@
         tools:context=".MainActivity" />
 
 
-
-
     <androidx.constraintlayout.helper.widget.Layer
         android:id="@+id/bar_layer"
         android:layout_width="0dp"

@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.example.android.shushme.provider.PlaceContract;
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(this, getString(R.string.need_location_permission_message), Toast.LENGTH_LONG).show();
             return;
         }
-        ((Button) findViewById(R.id.add_new_location)) .setVisibility( View.INVISIBLE);
+
         ((Group) findViewById(R.id.group)) .setVisibility( View.VISIBLE);
 
         mAutocompleteFragment .setPlaceFields(  Arrays.asList(Place.Field.ID,  Place.Field.NAME));

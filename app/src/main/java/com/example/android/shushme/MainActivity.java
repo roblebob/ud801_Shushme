@@ -23,6 +23,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.Group;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mGoogleMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private SupportMapFragment mSupportMapFragment;
-    private AutocompleteSupportFragment mAutocompleteFragment;
+
 
 
 
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mSupportMapFragment = (SupportMapFragment)  getSupportFragmentManager() .findFragmentById( R.id.map_fragment);
         mSupportMapFragment .getMapAsync(this);
 
-        mAutocompleteFragment = (AutocompleteSupportFragment)  getSupportFragmentManager() .findFragmentById( R.id.autocomplete_fragment);
+
         
         Places.initialize( getApplicationContext(), getString( R.string.ApiKey));
         mPlacesClient = Places.createClient(this);
@@ -152,12 +153,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             return;
         }
 
-        ((Group) findViewById(R.id.group)) .setVisibility( View.VISIBLE);
+        ((CardView) findViewById(R.id.autocomplete)) .setVisibility(View.VISIBLE);
 
-        mAutocompleteFragment .setPlaceFields(  Arrays.asList(Place.Field.ID,  Place.Field.NAME));
-        mAutocompleteFragment .setOnPlaceSelectedListener(  new PlaceSelectionListener() {
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)  getSupportFragmentManager() .findFragmentById( R.id.autocomplete_fragment);
+        autocompleteFragment .setPlaceFields(  Arrays.asList( Place.Field.ID,  Place.Field.NAME,  Place.Field.ADDRESS));
+        autocompleteFragment .setOnPlaceSelectedListener(  new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected( @NotNull Place place) {
+
                 Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
                 // Insert a new place into DB
                 ContentValues contentValues = new ContentValues();
@@ -166,14 +169,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 refreshPlacesData();
 
-                ((Group) findViewById(R.id.group)) .setVisibility( View.INVISIBLE);
-                ((Button) findViewById(R.id.add_new_location)) .setVisibility(View.VISIBLE);
+                ((CardView) findViewById(R.id.autocomplete)) .setVisibility(View.GONE);
             }
             @Override
             public void onError( @NotNull Status status) {
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
+
+
+
     }
 
 

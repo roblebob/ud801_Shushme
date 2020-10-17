@@ -54,11 +54,10 @@
 
     <androidx.constraintlayout.helper.widget.Layer
         android:id="@+id/bar_layer"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/colorBlackTransparent"
-        app:constraint_referenced_ids="location_permission,add_new_location_,enable_geofences"
-        app:layout_constraintBottom_toTopOf="@id/autocomplete_fragment"
+        app:constraint_referenced_ids="bar,location_permission,add_new_location_,enable_geofences"
+        app:layout_constraintBottom_toTopOf="@id/autocomplete"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.05"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,6 +65,17 @@
 
         />
 
+    <View
+        android:id="@+id/bar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/colorBlackTransparent"
+        app:layout_constraintTop_toTopOf="@id/bar_layer"
+        app:layout_constraintBottom_toBottomOf="@id/bar_layer"
+        app:layout_constraintStart_toStartOf="@id/bar_layer"
+        app:layout_constraintEnd_toEndOf="@id/bar_layer"
+
+        />
 
     <ImageButton
         android:id="@+id/location_permission"
@@ -80,8 +90,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/bar_layer"
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toStartOf="@id/add_new_location_"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintStart_toStartOf="@id/bar_layer"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/bar_layer" />
 
     <ImageButton
@@ -115,31 +125,26 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <fragment
-        android:id="@+id/autocomplete_fragment"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/autocomplete"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:minHeight="37dp"
-        app:layout_constraintEnd_toStartOf="@id/guideline_right"
-        app:layout_constraintStart_toEndOf="@id/guideline_left"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bar_layer"
         app:layout_constraintBottom_toTopOf="@id/recylerview"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        >
+        <fragment
+            android:id="@+id/autocomplete_fragment"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="37dp"
+            />
+    </androidx.cardview.widget.CardView>
+
+
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -154,7 +159,7 @@
         app:layout_constraintEnd_toStartOf="@id/guideline_right"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/guideline_left"
-        app:layout_constraintTop_toBottomOf="@id/autocomplete_fragment"
+        app:layout_constraintTop_toBottomOf="@id/autocomplete"
         app:layout_constraintVertical_bias="1.0" />
 
 

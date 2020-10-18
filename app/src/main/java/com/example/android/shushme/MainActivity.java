@@ -18,13 +18,14 @@ package com.example.android.shushme;
 
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.Group;
+import androidx.constraintlayout.helper.widget.Layer;
+import androidx.constraintlayout.utils.widget.ImageFilterButton;
+import androidx.constraintlayout.utils.widget.ImageFilterView;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -33,8 +34,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.example.android.shushme.provider.PlaceContract;
@@ -75,6 +74,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private SupportMapFragment mSupportMapFragment;
 
+    private ImageFilterView mBar;
+    private ImageFilterButton mLocationPermission;
+    private ImageFilterButton mAddLocation;
+    private ImageFilterButton mEnableGeofences;
+    private Layer mBarLayer;
+
 
 
 
@@ -100,12 +105,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
 
+
+
+
+        mBar = findViewById(R.id.bar);
+        mLocationPermission = findViewById(R.id.location_permission);
+        mAddLocation = findViewById(R.id.add_new_location);
+        mEnableGeofences = findViewById(R.id.enable_geofences);
+        mBarLayer = findViewById(R.id.bar_layer);
+
+
+
+
+
+
         refreshPlacesData();
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
 
 
@@ -153,31 +169,53 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             return;
         }
 
-        ((CardView) findViewById(R.id.autocomplete)) .setVisibility(View.VISIBLE);
-
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)  getSupportFragmentManager() .findFragmentById( R.id.autocomplete_fragment);
-        autocompleteFragment .setPlaceFields(  Arrays.asList( Place.Field.ID,  Place.Field.NAME,  Place.Field.ADDRESS));
-        autocompleteFragment .setOnPlaceSelectedListener(  new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected( @NotNull Place place) {
-
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-                // Insert a new place into DB
-                ContentValues contentValues = new ContentValues();
-                contentValues .put(  PlaceContract.PlaceEntry.COLUMN_PLACE_ID,  place.getId());
-                getContentResolver() .insert(  PlaceContract.PlaceEntry.CONTENT_URI,  contentValues);
-
-                refreshPlacesData();
-
-                ((CardView) findViewById(R.id.autocomplete)) .setVisibility(View.GONE);
-            }
-            @Override
-            public void onError( @NotNull Status status) {
-                Log.i(TAG, "An error occurred: " + status);
-            }
-        });
+        Log.e(TAG, "passed   onAddPlaceButtonClicked!");
 
 
+        CardView cardView = (CardView) findViewById(R.id.autocomplete);
+
+
+
+        if ( !mAddLocation.isSelected()) {
+
+            cardView.setVisibility( View.VISIBLE);
+            mAddLocation .setSelected( true);
+            mAddLocation .invalidate();
+            mAddLocation .requestLayout();
+
+            AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+            autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS));
+            autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                @Override
+                public void onPlaceSelected(@NotNull Place place) {
+
+                    Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                    // Insert a new place into DB
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(PlaceContract.PlaceEntry.COLUMN_PLACE_ID, place.getId());
+                    getContentResolver().insert(PlaceContract.PlaceEntry.CONTENT_URI, contentValues);
+
+                    refreshPlacesData();
+                    mAddLocation .setSelected( false);
+                    mAddLocation .invalidate();
+                    mAddLocation .requestLayout();
+
+                    cardView .setVisibility(View.GONE);
+
+                }
+
+                @Override
+                public void onError(@NotNull Status status) {
+                    Log.i(TAG, "An error occurred: " + status);
+                }
+            });
+
+        } else if ( mAddLocation. isSelected()) {
+            cardView.setVisibility(View.GONE);
+            mAddLocation .setSelected(false);
+            mAddLocation .invalidate();
+            mAddLocation .requestLayout();
+        }
 
     }
 
@@ -189,9 +227,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Initialize location permissions checkbox
         ImageView locationPermissions = (ImageView) findViewById( R.id.location_permission);
         if (ActivityCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            locationPermissions.setAlpha(ResourcesCompat.getFloat( this.getResources(), R.dimen.OFF));
+            locationPermissions.setSelected(false);
         } else {
-            locationPermissions.setAlpha(ResourcesCompat.getFloat( this.getResources(), R.dimen.ON));
+            locationPermissions.setSelected(true);
         }
 
         super.onResume();

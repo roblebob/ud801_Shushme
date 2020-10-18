@@ -3,7 +3,7 @@
     <color name="colorPrimaryLight">@color/primaryLightColor</color>
     <color name="colorPrimary">@color/primaryColor</color>
     <color name="colorPrimaryDark">@color/primaryDarkColor</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#FFEF91</color>
 
     <color name="primaryColor">#9fa8da</color>
     <color name="primaryLightColor">#d1d9ff</color>

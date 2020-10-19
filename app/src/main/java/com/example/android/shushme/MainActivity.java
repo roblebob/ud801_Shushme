@@ -26,6 +26,8 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.helper.widget.Layer;
 import androidx.constraintlayout.utils.widget.ImageFilterButton;
 import androidx.constraintlayout.utils.widget.ImageFilterView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -33,6 +35,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -74,7 +77,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private SupportMapFragment mSupportMapFragment;
 
-    private ImageFilterView mBar;
+
+    private ConstraintLayout mConstraintLayout;
+    private MyBar mBar;
     private ImageFilterButton mLocationPermission;
     private ImageFilterButton mAddLocation;
     private ImageFilterButton mEnableGeofences;
@@ -107,12 +112,52 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
+        mConstraintLayout = findViewById(R.id.constraint_layout);
 
         mBar = findViewById(R.id.bar);
+        mBar.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                ConstraintSet constraintSet = new ConstraintSet();
+                constraintSet.clone(mConstraintLayout);
+
+                Log.e(TAG, "--" + v.getId() + "----" + event.getActionMasked() + "-->  " + event.getRawY());
+
+                if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+
+                    v.setBackgroundColor(getColor(R.color.colorAccent));
+
+                } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
+
+                    constraintSet.setVerticalBias(mBarLayer.getId(), event.getRawY() / mConstraintLayout.getHeight());
+
+                } else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+
+                    v.setBackgroundColor(getColor(R.color.colorBlackTransparent));
+                    v.performClick();
+                }
+
+//
+               //Log.e(TAG, "--" + v.getId() + "----" + event.getActionMasked() + "-->  "+ y);
+//
+//                    constraintSet.setTranslationY(mBarLayer.getId(), y);
+//
+//
+
+
+                constraintSet.applyTo(mConstraintLayout);
+                return true;
+
+            }
+        }) ;
+
+
         mLocationPermission = findViewById(R.id.location_permission);
         mAddLocation = findViewById(R.id.add_new_location);
         mEnableGeofences = findViewById(R.id.enable_geofences);
         mBarLayer = findViewById(R.id.bar_layer);
+
 
 
 
